@@ -1,4 +1,4 @@
 # arduinoTibezz
 Code for Arduino 
 
-Criation of car robotic;
+Criation of robotic car for OBR 2016;
