@@ -11,8 +11,13 @@
 #include <Ultrasonic.h> //librarie of sensor ultrasonic
 
 //Definition of ports
-#define TRIGGER A0 
-#define ECHO A1
+#define TRIGGER A0 //sensor ultrasonic 
+#define ECHO A1 //sensor ultrasonic
+#define LED1 13 //led azul
+#define LED2 2 //led azul
+#define LDRRIGHT A2 //LDR direite
+#define LDRCENTER A3 //LDR centro
+#define LDRLEFT A4 //LDR esquerda
 
 //Create objects 
 AF_DCMotor MRBack(3);//Motor direito traseiro
@@ -21,7 +26,7 @@ AF_DCMotor MLBack(4);//Motor esquerdo traseiro
 AF_DCMotor MRFront(2);//Motor direito dianteiro
 AF_DCMotor MLFront(1);//Motor esquerdo dianteiro
 
-Ultrasonic Sensor(TRIGGER, ECHO);
+Ultrasonic Sensor(TRIGGER, ECHO); //Sensor ultrassonico 
 
 
 
@@ -32,27 +37,45 @@ Ultrasonic Sensor(TRIGGER, ECHO);
     setSpeed() - vel. do motor
     run() - direcao do motor
     timing() - recupera o tempo que a onda sonora levou
-    convert(time, Ultrassonic::CM) - calcula a distancia do obstaculo com base no tempo
+    convert(time, Ultrasonic::CM) - calcula a distancia do obstaculo com base no tempo
 */
 
 void setup(){
   
-  Serial.begin(9600); //Inicializando o serial  
+  Serial.begin(9600); //Inicializando o serial
+  pinMode(LED1, OUTPUT);
+  pinMode(LED2, INPUT);
+  digitalWrite(LED1, HIGH);
+  digitalWrite(LED2, HIGH);
   
 }
 
+//TESTE
 void loop(){
   
-  //Configuration of motors
-  MRBack.setSpeed(250);
+  double mili = Sensor.timing();
+  double cm = Sensor.convert(mili, Ultrasonic::CM);
+  Serial.println(cm);
+  
+  
+  if(cm <= 15 ){
+
+  }
+  
+   
+}
+
+
+void powerMotor(){
   MRBack.run(FORWARD);
+  MRBack.setSpeed(150);
   
-  MLBack.setSpeed(250);
   MLBack.run(FORWARD);
+  MLBack.setSpeed(150);
   
-  MRFront.setSpeed(250);
   MRFront.run(FORWARD);
+  MRFront.setSpeed(150);
   
-  MLFront.setSpeed(250);
   MLFront.run(FORWARD);
+  MLFront.setSpeed(150);
 }
