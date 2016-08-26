@@ -29,7 +29,6 @@ AF_DCMotor MLFront(1);//Motor esquerdo dianteiro
 Ultrasonic Sensor(TRIGGER, ECHO); //Sensor ultrassonico 
 
 
-
 /*
   Possiveis metodos:
   
@@ -38,6 +37,9 @@ Ultrasonic Sensor(TRIGGER, ECHO); //Sensor ultrassonico
     run() - direcao do motor
     timing() - recupera o tempo que a onda sonora levou
     convert(time, Ultrasonic::CM) - calcula a distancia do obstaculo com base no tempo
+    
+    
+    LDR => retorno baixo: muita luz; retorno alto: pouca luz.
 */
 
 void setup(){
@@ -57,25 +59,54 @@ void loop(){
   double cm = Sensor.convert(mili, Ultrasonic::CM);
   Serial.println(cm);
   
-  
+  //muito perto
   if(cm <= 15 ){
-
+    offMotor();
+    delay(200);
+    powerMotor(150, 50, 150, 50);
   }
-  
-   
+  else if (cm > 15 and cm <= 100){
+    powerMotor(150, 150, 150, 150);
+  }
+  else if (cm > 100 and cm <= 400){
+    powerMotor(250, 250, 250, 250); 
+  }
+    
 }
 
+/*
+Ordem do metodo =>  motor da frente esquerda depois direita, motor traseiro esquerdo depois direita
+Basta colocar a velocidade deseja como argumento
+*/
 
-void powerMotor(){
+void powerMotor(int vLeftFront, int vRightFront,  int vLeftBack, int vRightBack){ //metodo para ligar motor, velocidade em 250
+  
+  MRBack.setSpeed(vRightBack);
   MRBack.run(FORWARD);
-  MRBack.setSpeed(150);
   
+  MLBack.setSpeed(vLeftBack);
   MLBack.run(FORWARD);
-  MLBack.setSpeed(150);
   
+  MRFront.setSpeed(vRightFront);
   MRFront.run(FORWARD);
-  MRFront.setSpeed(150);
   
+  MLFront.setSpeed(vLeftFront);
   MLFront.run(FORWARD);
-  MLFront.setSpeed(150);
+}
+
+//desligar motor
+void offMotor (){
+  
+  MRBack.setSpeed(0);
+  MRBack.run(RELEASE);
+  
+  MLBack.setSpeed(0);
+  MLBack.run(RELEASE);
+  
+  MRFront.setSpeed(0);
+  MRFront.run(RELEASE);
+  
+  MLFront.setSpeed(0);
+  MLFront.run(RELEASE);
+  
 }
